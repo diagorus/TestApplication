@@ -10,7 +10,8 @@ object SearchContract {
     interface View : BaseView<Presenter> {
         fun showResults(result: List<Gif>)
     }
+
     interface Presenter {
-        fun search(query: String)
+        fun search(query: String, offset: Int, limit: Int)
     }
 }

@@ -13,10 +13,8 @@ import timber.log.Timber
  */
 class App : Application() {
     companion object {
-        fun get(ctx: Context): App = ctx.applicationContext as App
+        lateinit var appComponent: AppComponent
     }
-
-    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()

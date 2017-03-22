@@ -19,7 +19,7 @@ interface MainActivityComponent {
 
     @Subcomponent.Builder
     interface Builder {
-        fun loginActivityModule(module: MainActivityModule): Builder
+        fun mainActivityModule(module: MainActivityModule): Builder
         fun build(): MainActivityComponent
     }
 }
