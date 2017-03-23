@@ -1,10 +1,17 @@
 package com.fuh.testapplication.util
 
+import android.content.Context
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import com.bumptech.glide.BitmapRequestBuilder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
 import kotlinx.android.synthetic.main.item_gif.view.*
@@ -15,7 +22,7 @@ import timber.log.Timber
  */
 class GifsAdapter(
         var gifs: MutableList<Gif>,
-        val itemClick: (Gif) -> Unit
+        val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
 ) : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = gifs.size
@@ -31,18 +38,30 @@ class GifsAdapter(
 
     class ViewHolder(
             itemView: View,
-            val itemClick: (Gif) -> Unit
-    ): RecyclerView.ViewHolder(itemView) {
+            val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
+
         fun bind(gif: Gif) = with(gif) {
-            Timber.i(this.toString())
-            Glide.with(itemView.ctx)
-                    .load(images.original.url)
+            var isPlaying = false
+            val uri = Uri.parse(images.original.url)
+            val thumbRequest = Glide
+                    .with(itemView.ctx)
+                    .load(uri)
                     .asBitmap()
-                    .error(R.drawable.thumb_image_error)
-                    .placeholder(R.drawable.thumb_image_loading)
-                    .into(itemView.imageItemGifIcon)
+                    .transcode(BitmapToGlideDrawableTranscoder(itemView.ctx), GlideDrawable::class.java)
+                    .override(150, 150)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.thumb_image_loading)
+                    .placeholder(R.drawable.thumb_image_error)
+                    .fitCenter()
+
+
+            thumbRequest.into(itemView.imageItemGifIcon)
             itemView.textItemGifTitle.text = slug
-            itemView.setOnClickListener { itemClick(this) }
+            itemView.setOnClickListener {
+                itemClick(itemView.ctx, uri, thumbRequest,itemView.imageItemGifIcon, isPlaying)
+                isPlaying = !isPlaying
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ package com.fuh.testapplication.ui.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
 import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.component.activity.MainActivityComponent
@@ -41,15 +43,30 @@ class MainActivity : BaseActivity(), SearchContract.View {
 
     private fun init() {
         with(recyclerActivityMainGifs) {
-            layoutManager = GridLayoutManager(ctx, 3)
+            layoutManager = GridLayoutManager(ctx, 2)
 
             gifsAdapter = GifsAdapter(mutableListOf<Gif>()) {
-                //TODO: implement full gif showing
+                ctx, uri, thumbRequest, imageView, isPlaying ->
+                if (!isPlaying) {
+                    Glide
+                            .with(ctx)
+                            .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .override(150, 150)
+                            .placeholder(R.drawable.thumb_image_loading)
+                            .error(R.drawable.thumb_image_error)
+                            .thumbnail(thumbRequest)
+                            .dontAnimate()
+                            .into(imageView)
+                } else {
+                    thumbRequest.into(imageView)
+                }
             }
+
             adapter = gifsAdapter
         }
 
-        //TODO: just loading 2 cat gifs for now
-        presenter.search("cat", 0, 2)
+        //TODO: just loading 7 cat gifs for now
+        presenter.search("cat", 0, 7)
     }
 }
