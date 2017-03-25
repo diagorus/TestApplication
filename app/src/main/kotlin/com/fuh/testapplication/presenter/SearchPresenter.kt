@@ -15,13 +15,28 @@ class SearchPresenter
                         val model: GiphyApi
     ) : SearchContract.Presenter {
 
+    companion object {
+        const val RECORDS_IN_PAGE = 30
+    }
 
+    var query = ""
 
-    override fun search(query: String, offset: Int, limit: Int) {
-        model.search(query, offset, limit)
+    override fun loadFirstPage(q: String) {
+        query = getSearchQuery(q)
+        model.search(query, 0, RECORDS_IN_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    view.showResults(it.data)
+                    view.showFirstResults(it.data)
                 }
     }
+
+    override fun loadNextPage(page: Int) {
+        model.search(query, RECORDS_IN_PAGE * (page - 1), RECORDS_IN_PAGE)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    view.showNextResults(it.data)
+                }
+    }
+
+    fun getSearchQuery(q: String) = q.replace(' ', '+')
 }

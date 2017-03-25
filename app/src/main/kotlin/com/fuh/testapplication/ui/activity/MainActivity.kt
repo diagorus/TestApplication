@@ -1,8 +1,13 @@
 package com.fuh.testapplication.ui.activity
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.view.Menu
+import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
@@ -10,9 +15,10 @@ import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.component.activity.MainActivityComponent
 import com.fuh.testapplication.di.module.activity.MainActivityModule
 import com.fuh.testapplication.model.Gif
-import com.fuh.testapplication.util.GifsAdapter
-import com.fuh.testapplication.util.ctx
+import com.fuh.testapplication.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -22,36 +28,16 @@ class MainActivity : BaseActivity(), SearchContract.View {
     @Inject override lateinit var presenter: SearchContract.Presenter
 
     lateinit var gifsAdapter: GifsAdapter
+    lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbarActivityMain)
-        init()
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.activity_main, menu)
-
-        return true
-    }
-
-    override fun setupDependencies() {
-        component = appComponent.mainActivityComponentBuilder()
-                .mainActivityModule(MainActivityModule(this))
-                .build()
-
-        component.inject(this)
-    }
-
-    override fun showResults(result: List<Gif>) {
-        gifsAdapter.gifs.addAll(result)
-        gifsAdapter.notifyDataSetChanged()
-    }
-
-    private fun init() {
         with(recyclerActivityMainGifs) {
-            layoutManager = GridLayoutManager(ctx, 2)
+            val gridLayoutManager = GridLayoutManager(ctx, 2)
+            layoutManager = gridLayoutManager
 
             gifsAdapter = GifsAdapter(mutableListOf<Gif>()) {
                 ctx, uri, thumbRequest, imageView, isPlaying ->
@@ -71,10 +57,68 @@ class MainActivity : BaseActivity(), SearchContract.View {
                 }
             }
 
+            scrollListener = object: EndlessRecyclerViewScrollListener(gridLayoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                    presenter.loadNextPage(page)
+                }
+            }
+            addOnScrollListener(scrollListener)
+
             adapter = gifsAdapter
         }
-
-        //TODO: just loading 7 cat gifs for now
-        presenter.search("cat", 0, 7)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_main, menu)
+
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+
+        val searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as EditText
+        searchEditText.setOnClickListener {
+            startSearchActions(searchView)
+        }
+
+        searchView.setOnClickListener {
+            startSearchActions(searchView)
+        }
+
+        searchView.setOnSearchClickListener {
+            startSearchActions(searchView)
+        }
+
+        return true
+    }
+
+    override fun setupDependencies() {
+        component = appComponent.mainActivityComponentBuilder()
+                .mainActivityModule(MainActivityModule(this))
+                .build()
+
+        component.inject(this)
+    }
+
+    override fun showFirstResults(data: List<Gif>) {
+        gifsAdapter.setGifs(data)
+        gifsAdapter.notifyDataSetChanged()
+        scrollListener.resetState()
+    }
+
+    override fun showNextResults(data: List<Gif>) {
+        gifsAdapter.addAllToGifs(data)
+        gifsAdapter.notifyDataSetChanged()
+    }
+
+    private fun startSearchActions(searchView: SearchView) = searchView.rxQueryText()
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .filter { it.length > 1 }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                presenter.loadFirstPage(it)
+            },{
+                toast("Error! ${ it.message }")
+            },{
+                Utils.hideKeyboard(this)
+            })
 }

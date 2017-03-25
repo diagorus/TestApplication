@@ -15,15 +15,16 @@ import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscode
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
 import kotlinx.android.synthetic.main.item_gif.view.*
-import timber.log.Timber
 
 /**
  * Created by Nick on 22.03.2017.
  */
 class GifsAdapter(
-        var gifs: MutableList<Gif>,
-        val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
+        initialValues: List<Gif> = listOf(),
+        private val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
 ) : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
+
+    private var gifs: MutableList<Gif> = mutableListOf<Gif>().apply { addAll(initialValues) }
 
     override fun getItemCount(): Int = gifs.size
 
@@ -36,9 +37,18 @@ class GifsAdapter(
         return ViewHolder(view, itemClick)
     }
 
+    fun setGifs(gifs: List<Gif>) = with(this.gifs) {
+        clear()
+        addAll(gifs)
+    }
+
+    fun addAllToGifs(gifs: List<Gif>) = this.gifs.addAll(gifs)
+
+
     class ViewHolder(
             itemView: View,
-            val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
+            val itemClick:
+            (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(gif: Gif) = with(gif) {

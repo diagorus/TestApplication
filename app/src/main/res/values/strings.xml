@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TestApplication</string>
     <string name="main_search">Search</string>
+    <string name="main_searchhint">Search…</string>
 </resources>

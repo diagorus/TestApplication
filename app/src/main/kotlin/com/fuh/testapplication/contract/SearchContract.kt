@@ -8,10 +8,12 @@ import com.fuh.testapplication.ui.BaseView
  */
 object SearchContract {
     interface View : BaseView<Presenter> {
-        fun showResults(result: List<Gif>)
+        fun showFirstResults(data: List<Gif>)
+        fun showNextResults(data: List<Gif>)
     }
 
     interface Presenter {
-        fun search(query: String, offset: Int, limit: Int)
+        fun loadFirstPage(q: String)
+        fun loadNextPage(page: Int)
     }
 }

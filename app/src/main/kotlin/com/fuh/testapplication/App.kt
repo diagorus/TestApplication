@@ -1,7 +1,6 @@
 package com.fuh.testapplication
 
 import android.app.Application
-import android.content.Context
 import com.fuh.testapplication.di.component.AppComponent
 import com.fuh.testapplication.di.component.DaggerAppComponent
 import com.fuh.testapplication.di.module.AppModule
