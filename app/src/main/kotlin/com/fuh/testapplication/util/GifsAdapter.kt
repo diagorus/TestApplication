@@ -51,8 +51,8 @@ class GifsAdapter(
                     .transcode(BitmapToGlideDrawableTranscoder(itemView.ctx), GlideDrawable::class.java)
                     .override(150, 150)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.drawable.thumb_image_loading)
-                    .placeholder(R.drawable.thumb_image_error)
+                    .error(R.drawable.thumb_image_error)
+                    .placeholder(R.drawable.thumb_image_loading)
                     .fitCenter()
 
 

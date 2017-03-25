@@ -1,8 +1,8 @@
 package com.fuh.testapplication.ui.activity
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.view.Menu
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
@@ -15,6 +15,7 @@ import com.fuh.testapplication.util.ctx
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
+
 class MainActivity : BaseActivity(), SearchContract.View {
 
     lateinit var component: MainActivityComponent
@@ -25,7 +26,14 @@ class MainActivity : BaseActivity(), SearchContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbarActivityMain)
         init()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_main, menu)
+
+        return true
     }
 
     override fun setupDependencies() {
