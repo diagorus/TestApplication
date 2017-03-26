@@ -1,7 +1,9 @@
 package com.fuh.testapplication.util
 
 import android.content.Context
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.SearchView
+import android.view.MenuItem
 import android.view.View
 import rx.Observable
 
@@ -26,4 +28,11 @@ fun SearchView.rxQueryText() = Observable.create<String> {
             return true
         }
     })
+}
+
+fun MenuItem.tint(color: Int)  = icon?.let {
+    val wrapped = DrawableCompat.wrap(it)
+    it.mutate()
+    DrawableCompat.setTint(wrapped, color)
+    icon = it
 }

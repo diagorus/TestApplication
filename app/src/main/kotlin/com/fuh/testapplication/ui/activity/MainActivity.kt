@@ -2,11 +2,14 @@ package com.fuh.testapplication.ui.activity
 
 import android.app.SearchManager
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -89,6 +92,19 @@ class MainActivity : BaseActivity(), SearchContract.View {
         }
 
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(R.id.saved).tint(Color.rgb(255, 255, 255))
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean  = when(item.itemId) {
+        R.id.saved -> {
+            toast("saved")
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun setupDependencies() {
