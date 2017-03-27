@@ -13,6 +13,10 @@ object SearchContract {
         fun showNextResults(data: List<Gif>)
         fun showNoItems()
         fun hideNoItems()
+        fun showSavingSuccessful(gif: Gif)
+        fun showSavingError(gif: Gif)
+        fun showSearchError()
+        fun showNextPageError()
     }
 
     interface Presenter : BasePresenter {

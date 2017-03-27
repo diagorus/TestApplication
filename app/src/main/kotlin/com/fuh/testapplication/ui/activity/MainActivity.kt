@@ -148,6 +148,22 @@ class MainActivity : BaseActivity(), SearchContract.View {
         recyclerActivityMainGifs.visibility = View.VISIBLE
     }
 
+    override fun showSavingSuccessful(gif: Gif) {
+        toast(getString(R.string.main_successfulsave, gif.slug))
+    }
+
+    override fun showSavingError(gif: Gif) {
+        toast(getString(R.string.main_errorsave, gif.slug))
+    }
+
+    override fun showSearchError() {
+        toast(getString(R.string.main_errorsearch))
+    }
+
+    override fun showNextPageError() {
+        toast(getString(R.string.main_errornextpage))
+    }
+
     private fun startSearchActions(searchView: SearchView) = searchView.rxQueryText()
             .debounce(200, TimeUnit.MILLISECONDS)
             .filter { it.length > 1 }

@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">TestApplication</string>
+    <string name="all_no_items">No items here. Search somewhere else</string>
+
     <string name="main_search">Search</string>
     <string name="main_searchhint">Search…</string>
     <string name="main_saved">Saved</string>
+    <string name="main_successfulsave">Saved: %1$s</string>
+    <string name="main_errorsave">Error saving: %1$s</string>
+    <string name="main_errorsearch">Error searching query!</string>
+    <string name="main_errornextpage">Last page!</string>
+
     <string name="saved_title">Saved</string>
-    <string name="all_no_items">No items here. Search somewhere else</string>
 </resources>

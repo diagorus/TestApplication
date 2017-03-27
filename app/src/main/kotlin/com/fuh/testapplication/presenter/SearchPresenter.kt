@@ -39,12 +39,14 @@ class SearchPresenter
         query = getSearchQuery(q)
         model.search(query, 0, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe ({
                     if (it.data.isEmpty()) {
                         view.showNoItems()
                     }
                     view.showFirstResults(it.data)
-                }
+                }, {
+                    view.showSearchError()
+                })
     }
 
     override fun loadNextPage(page: Int) {
@@ -53,7 +55,7 @@ class SearchPresenter
                 .subscribe ({
                     view.showNextResults(it.data)
                 }, {
-
+                    view.showNextPageError()
                 })
     }
 
@@ -66,9 +68,9 @@ class SearchPresenter
 
             it.copyToRealm(gif)
         }, {
-
+            view.showSavingSuccessful(gif)
         }, {
-
+            view.showSavingError(gif)
         })
     }
 
