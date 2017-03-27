@@ -1,8 +1,12 @@
 package com.fuh.testapplication.presenter
 
+import android.net.Uri
 import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.scope.ActivityScope
+import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.model.GiphyApi
+import com.fuh.testapplication.util.Utils
+import io.realm.Realm
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -12,18 +16,25 @@ import javax.inject.Inject
 @ActivityScope
 class SearchPresenter
     @Inject constructor(val view: SearchContract.View,
-                        val model: GiphyApi
+                        val model: GiphyApi,
+                        val realm: Realm
     ) : SearchContract.Presenter {
 
     companion object {
-        const val RECORDS_IN_PAGE = 30
+        const val RECORDS_ON_PAGE = 30
     }
 
     var query = ""
 
+    override fun start() {}
+
+    override fun stop() {
+        realm.close()
+    }
+
     override fun loadFirstPage(q: String) {
         query = getSearchQuery(q)
-        model.search(query, 0, RECORDS_IN_PAGE)
+        model.search(query, 0, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     view.showFirstResults(it.data)
@@ -31,12 +42,23 @@ class SearchPresenter
     }
 
     override fun loadNextPage(page: Int) {
-        model.search(query, RECORDS_IN_PAGE * (page - 1), RECORDS_IN_PAGE)
+        model.search(query, RECORDS_ON_PAGE * page, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     view.showNextResults(it.data)
                 }
     }
 
-    fun getSearchQuery(q: String) = q.replace(' ', '+')
+    override fun saveGif(gif: Gif) {
+        realm.executeTransactionAsync {
+            val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
+            Utils.downloadFileSync(gif.images!!.original!!.url!!, futureGifFile)
+
+            gif.url = Uri.fromFile(futureGifFile).toString()
+
+            it.copyToRealm(gif)
+        }
+    }
+
+    private fun getSearchQuery(q: String) = q.replace(' ', '+')
 }

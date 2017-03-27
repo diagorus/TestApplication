@@ -4,7 +4,6 @@ import android.app.SearchManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -14,6 +13,7 @@ import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
+import com.fuh.testapplication.adapter.GifsAdapter
 import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.component.activity.MainActivityComponent
 import com.fuh.testapplication.di.module.activity.MainActivityModule
@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
             val gridLayoutManager = GridLayoutManager(ctx, 2)
             layoutManager = gridLayoutManager
 
-            gifsAdapter = GifsAdapter(mutableListOf<Gif>()) {
+            gifsAdapter = GifsAdapter(mutableListOf<Gif>(), {
                 ctx, uri, thumbRequest, imageView, isPlaying ->
                 if (!isPlaying) {
                     Glide
@@ -58,7 +58,10 @@ class MainActivity : BaseActivity(), SearchContract.View {
                 } else {
                     thumbRequest.into(imageView)
                 }
-            }
+            }, {
+                presenter.saveGif(it)
+                true
+            })
 
             scrollListener = object: EndlessRecyclerViewScrollListener(gridLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
@@ -69,6 +72,13 @@ class MainActivity : BaseActivity(), SearchContract.View {
 
             adapter = gifsAdapter
         }
+
+        presenter.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.stop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -101,7 +111,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean  = when(item.itemId) {
         R.id.saved -> {
-            toast("saved")
+            startActivity(SavedActivity.newIntent(this))
             true
         }
         else -> super.onOptionsItemSelected(item)

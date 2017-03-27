@@ -5,6 +5,8 @@ import com.fuh.testapplication.di.component.AppComponent
 import com.fuh.testapplication.di.component.DaggerAppComponent
 import com.fuh.testapplication.di.module.AppModule
 import com.fuh.testapplication.di.module.NetworkModule
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import timber.log.Timber
 
 /**
@@ -24,5 +26,15 @@ class App : Application() {
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule("http://api.giphy.com/"))
                 .build()
+
+        initRealm()
+    }
+
+    fun initRealm() {
+        Realm.init(this)
+        val config = RealmConfiguration.Builder()
+                .name("TestApplication.realm")
+                .build()
+        Realm.setDefaultConfiguration(config)
     }
 }

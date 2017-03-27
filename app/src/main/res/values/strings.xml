@@ -3,4 +3,5 @@
     <string name="main_search">Search</string>
     <string name="main_searchhint">Search…</string>
     <string name="main_saved">Saved</string>
+    <string name="saved_title">Saved</string>
 </resources>

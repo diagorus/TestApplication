@@ -3,19 +3,18 @@ package com.fuh.testapplication.contract
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.presenter.BasePresenter
 import com.fuh.testapplication.ui.BaseView
+import io.realm.RealmResults
 
 /**
- * Created by Nick on 22.03.2017.
+ * Created by Nick on 26.03.2017.
  */
-object SearchContract {
+object SavedContract {
     interface View : BaseView<Presenter> {
-        fun showFirstResults(data: List<Gif>)
-        fun showNextResults(data: List<Gif>)
+        fun showSavedGifs(data: RealmResults<Gif>)
     }
 
     interface Presenter : BasePresenter {
-        fun loadFirstPage(q: String)
-        fun loadNextPage(page: Int)
-        fun saveGif(gif: Gif)
+        fun loadSavedGifs()
+        fun deleteGif(gif: Gif)
     }
 }

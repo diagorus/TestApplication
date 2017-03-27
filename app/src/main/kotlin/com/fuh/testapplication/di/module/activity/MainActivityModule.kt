@@ -11,7 +11,6 @@ import dagger.Provides
  */
 @Module
 class MainActivityModule(val view: SearchContract.View) {
-
     @ActivityScope
     @Provides
     fun provideView(): SearchContract.View = view

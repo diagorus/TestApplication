@@ -1,4 +1,4 @@
-package com.fuh.testapplication.util
+package com.fuh.testapplication.adapter
 
 import android.content.Context
 import android.net.Uri
@@ -14,46 +14,50 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
+import com.fuh.testapplication.util.ctx
+import io.realm.RealmChangeListener
+import io.realm.RealmResults
 import kotlinx.android.synthetic.main.item_gif.view.*
 
 /**
- * Created by Nick on 22.03.2017.
+ * Created by Nick on 26.03.2017.
  */
-class GifsAdapter(
-        initialValues: List<Gif> = listOf(),
-        private val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
-) : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
-
-    private var gifs: MutableList<Gif> = mutableListOf<Gif>().apply { addAll(initialValues) }
-
-    override fun getItemCount(): Int = gifs.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(gifs[position])
-    }
+class SavedGifsAdapter(var gifs: RealmResults<Gif>? = null,
+                       private val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit,
+                       private val itemLongClick: (Gif) -> Boolean
+) : RecyclerView.Adapter<SavedGifsAdapter.ViewHolder>(),
+        RealmChangeListener<RealmResults<Gif>> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.ctx).inflate(R.layout.item_gif, parent, false)
-        return ViewHolder(view, itemClick)
+        return ViewHolder(view, itemClick, itemLongClick)
     }
 
-    fun setGifs(gifs: List<Gif>) = with(this.gifs) {
-        clear()
-        addAll(gifs)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(gifs!![position])
     }
 
-    fun addAllToGifs(gifs: List<Gif>) = this.gifs.addAll(gifs)
+    override fun getItemCount(): Int = gifs?.size ?: 0
 
+    override fun onChange(element: RealmResults<Gif>?) {
+        notifyDataSetChanged()
+    }
+
+    fun setSavedGifs(data: RealmResults<Gif>) {
+        gifs = data
+        gifs!!.addChangeListener(this)
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(
             itemView: View,
-            val itemClick:
-            (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit
+            private val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit,
+            private val itemLongClick: (Gif) -> Boolean
     ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(gif: Gif) = with(gif) {
             var isPlaying = false
-            val uri = Uri.parse(images.original.url)
+            val uri = Uri.parse(images?.original?.url)
             val thumbRequest = Glide
                     .with(itemView.ctx)
                     .load(uri)
@@ -71,6 +75,9 @@ class GifsAdapter(
             itemView.setOnClickListener {
                 itemClick(itemView.ctx, uri, thumbRequest,itemView.imageItemGifIcon, isPlaying)
                 isPlaying = !isPlaying
+            }
+            itemView.setOnLongClickListener {
+                itemLongClick(this)
             }
         }
     }
