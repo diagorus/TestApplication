@@ -17,6 +17,7 @@ object SearchContract {
         fun showSavingError(gif: Gif)
         fun showSearchError()
         fun showNextPageError()
+        fun showAlreadySavedError(gif: Gif)
     }
 
     interface Presenter : BasePresenter {

@@ -9,6 +9,7 @@
     <string name="main_errorsave">Error saving: %1$s</string>
     <string name="main_errorsearch">Error searching query!</string>
     <string name="main_errornextpage">Last page!</string>
+    <string name="main_erroralreadysaved">Gif \'%1$s\' is already saved!</string>
 
     <string name="saved_title">Saved</string>
 </resources>

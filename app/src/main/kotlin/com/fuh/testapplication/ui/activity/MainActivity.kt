@@ -116,6 +116,10 @@ class MainActivity : BaseActivity(), SearchContract.View {
         toast(getString(R.string.main_errornextpage))
     }
 
+    override fun showAlreadySavedError(gif: Gif) {
+        toast(getString(R.string.main_erroralreadysaved, gif.slug))
+    }
+
     private fun initRecycler() = with(recyclerActivityMainGifs) {
         val gridLayoutManager = GridLayoutManager(ctx, 2)
         layoutManager = gridLayoutManager

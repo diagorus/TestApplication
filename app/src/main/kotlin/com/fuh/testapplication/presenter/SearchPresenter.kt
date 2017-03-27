@@ -60,8 +60,14 @@ class SearchPresenter
     }
 
     override fun saveGif(gif: Gif) {
+        val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
+
+        if (futureGifFile.exists()) {
+            view.showAlreadySavedError(gif)
+            return
+        }
+
         realm.executeTransactionAsync ({
-            val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
             Utils.downloadFileSync(gif.images!!.original!!.url!!, futureGifFile)
 
             gif.images!!.original!!.url = Uri.fromFile(futureGifFile).toString()
@@ -75,4 +81,8 @@ class SearchPresenter
     }
 
     private fun getSearchQuery(q: String) = q.replace(' ', '+')
+
+    private fun isAlreadySaved(gif: String) {
+
+    }
 }
