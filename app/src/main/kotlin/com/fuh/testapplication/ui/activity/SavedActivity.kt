@@ -36,38 +36,7 @@ class SavedActivity : BaseActivity(), SavedContract.View {
         setContentView(R.layout.activity_saved)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        with(recyclerActivitySavedGifs) {
-            val gridLayoutManager = GridLayoutManager(ctx, 2)
-            layoutManager = gridLayoutManager
-
-            savedGifsAdapter = SavedGifsAdapter(RealmChangeListener<RealmResults<Gif>> {
-                if (it.isEmpty()) {
-                    showNoItems()
-                }
-                savedGifsAdapter.notifyDataSetChanged()
-            }, {
-                ctx, uri, thumbRequest, imageView, isPlaying ->
-                if (!isPlaying) {
-                    Glide
-                            .with(ctx)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .override(150, 150)
-                            .placeholder(R.drawable.thumb_image_loading)
-                            .error(R.drawable.thumb_image_error)
-                            .thumbnail(thumbRequest)
-                            .dontAnimate()
-                            .into(imageView)
-                } else {
-                    thumbRequest.into(imageView)
-                }
-            }, {
-                presenter.deleteGif(it)
-                true
-            })
-
-            adapter = savedGifsAdapter
-        }
+        initRecycler()
 
         presenter.start()
     }
@@ -98,5 +67,38 @@ class SavedActivity : BaseActivity(), SavedContract.View {
     override fun hideNoItems() {
         linearLayoutAllNoItems.visibility = View.GONE
         recyclerActivitySavedGifs.visibility = View.VISIBLE
+    }
+
+    fun initRecycler() = with(recyclerActivitySavedGifs) {
+        val gridLayoutManager = GridLayoutManager(ctx, 2)
+        layoutManager = gridLayoutManager
+
+        savedGifsAdapter = SavedGifsAdapter(RealmChangeListener<RealmResults<Gif>> {
+            if (it.isEmpty()) {
+                showNoItems()
+            }
+            savedGifsAdapter.notifyDataSetChanged()
+        }, {
+            ctx, uri, thumbRequest, imageView, isPlaying ->
+            if (!isPlaying) {
+                Glide
+                        .with(ctx)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .override(150, 150)
+                        .placeholder(R.drawable.thumb_image_loading)
+                        .error(R.drawable.thumb_image_error)
+                        .thumbnail(thumbRequest)
+                        .dontAnimate()
+                        .into(imageView)
+            } else {
+                thumbRequest.into(imageView)
+            }
+        }, {
+            presenter.deleteGif(it)
+            true
+        })
+
+        adapter = savedGifsAdapter
     }
 }

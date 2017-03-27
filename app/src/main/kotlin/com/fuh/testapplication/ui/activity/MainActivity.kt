@@ -40,40 +40,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbarActivityMain)
 
-        with(recyclerActivityMainGifs) {
-            val gridLayoutManager = GridLayoutManager(ctx, 2)
-            layoutManager = gridLayoutManager
-
-            gifsAdapter = GifsAdapter(mutableListOf<Gif>(), {
-                ctx, uri, thumbRequest, imageView, isPlaying ->
-                if (!isPlaying) {
-                    Glide
-                            .with(ctx)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .override(150, 150)
-                            .placeholder(R.drawable.thumb_image_loading)
-                            .error(R.drawable.thumb_image_error)
-                            .thumbnail(thumbRequest)
-                            .dontAnimate()
-                            .into(imageView)
-                } else {
-                    thumbRequest.into(imageView)
-                }
-            }, {
-                presenter.saveGif(it)
-                true
-            })
-
-            scrollListener = object: EndlessRecyclerViewScrollListener(gridLayoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                    presenter.loadNextPage(page)
-                }
-            }
-            addOnScrollListener(scrollListener)
-
-            adapter = gifsAdapter
-        }
+        initRecycler()
 
         presenter.start()
     }
@@ -86,22 +53,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_main, menu)
 
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
-        val searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as EditText
-        searchEditText.setOnClickListener {
-            startSearchActions(searchView)
-        }
-
-        searchView.setOnClickListener {
-            startSearchActions(searchView)
-        }
-
-        searchView.setOnSearchClickListener {
-            startSearchActions(searchView)
-        }
+        setupSearchView(menu)
 
         return true
     }
@@ -162,6 +114,60 @@ class MainActivity : BaseActivity(), SearchContract.View {
 
     override fun showNextPageError() {
         toast(getString(R.string.main_errornextpage))
+    }
+
+    private fun initRecycler() = with(recyclerActivityMainGifs) {
+        val gridLayoutManager = GridLayoutManager(ctx, 2)
+        layoutManager = gridLayoutManager
+
+        gifsAdapter = GifsAdapter(mutableListOf<Gif>(), {
+            ctx, uri, thumbRequest, imageView, isPlaying ->
+            if (!isPlaying) {
+                Glide
+                        .with(ctx)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .override(150, 150)
+                        .placeholder(R.drawable.thumb_image_loading)
+                        .error(R.drawable.thumb_image_error)
+                        .thumbnail(thumbRequest)
+                        .dontAnimate()
+                        .into(imageView)
+            } else {
+                thumbRequest.into(imageView)
+            }
+        }, {
+            presenter.saveGif(it)
+            true
+        })
+
+        scrollListener = object: EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                presenter.loadNextPage(page)
+            }
+        }
+        addOnScrollListener(scrollListener)
+
+        adapter = gifsAdapter
+    }
+
+    private fun setupSearchView(menu: Menu) {
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+
+        val searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as EditText
+        searchEditText.setOnClickListener {
+            startSearchActions(searchView)
+        }
+
+        searchView.setOnClickListener {
+            startSearchActions(searchView)
+        }
+
+        searchView.setOnSearchClickListener {
+            startSearchActions(searchView)
+        }
     }
 
     private fun startSearchActions(searchView: SearchView) = searchView.rxQueryText()
