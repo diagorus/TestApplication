@@ -24,10 +24,15 @@ class SavedPresenter
     override fun loadSavedGifs() {
         val data = realm.where(Gif::class.java).findAll()
 
+        if (data.isEmpty()) {
+            view.showNoItems()
+        }
         view.showSavedGifs(data)
     }
 
     override fun deleteGif(gif: Gif) {
-
+        realm.executeTransaction {
+            gif.deleteFromRealm()
+        }
     }
 }

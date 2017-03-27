@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
@@ -13,8 +14,10 @@ import com.fuh.testapplication.di.component.activity.SavedActivityComponent
 import com.fuh.testapplication.di.module.activity.SavedActivityModule
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.util.ctx
+import io.realm.RealmChangeListener
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_saved.*
+import kotlinx.android.synthetic.main.layout_no_items.*
 import javax.inject.Inject
 
 class SavedActivity : BaseActivity(), SavedContract.View {
@@ -37,7 +40,12 @@ class SavedActivity : BaseActivity(), SavedContract.View {
             val gridLayoutManager = GridLayoutManager(ctx, 2)
             layoutManager = gridLayoutManager
 
-            savedGifsAdapter = SavedGifsAdapter(itemClick = {
+            savedGifsAdapter = SavedGifsAdapter(RealmChangeListener<RealmResults<Gif>> {
+                if (it.isEmpty()) {
+                    showNoItems()
+                }
+                savedGifsAdapter.notifyDataSetChanged()
+            }, {
                 ctx, uri, thumbRequest, imageView, isPlaying ->
                 if (!isPlaying) {
                     Glide
@@ -53,7 +61,7 @@ class SavedActivity : BaseActivity(), SavedContract.View {
                 } else {
                     thumbRequest.into(imageView)
                 }
-            }, itemLongClick = {
+            }, {
                 presenter.deleteGif(it)
                 true
             })
@@ -80,5 +88,15 @@ class SavedActivity : BaseActivity(), SavedContract.View {
 
     override fun showSavedGifs(data: RealmResults<Gif>) {
         savedGifsAdapter.setSavedGifs(data)
+    }
+
+    override fun showNoItems() {
+        linearLayoutAllNoItems.visibility = View.VISIBLE
+        recyclerActivitySavedGifs.visibility = View.GONE
+    }
+
+    override fun hideNoItems() {
+        linearLayoutAllNoItems.visibility = View.GONE
+        recyclerActivitySavedGifs.visibility = View.VISIBLE
     }
 }

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,6 +21,7 @@ import com.fuh.testapplication.di.module.activity.MainActivityModule
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_no_items.*
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -105,7 +107,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.saved).tint(Color.rgb(255, 255, 255))
+        menu.tintAllIcons(Color.rgb(255, 255, 255))
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -134,6 +136,16 @@ class MainActivity : BaseActivity(), SearchContract.View {
     override fun showNextResults(data: List<Gif>) {
         gifsAdapter.addAllToGifs(data)
         gifsAdapter.notifyDataSetChanged()
+    }
+
+    override fun showNoItems() {
+        linearLayoutAllNoItems.visibility = View.VISIBLE
+        recyclerActivityMainGifs.visibility = View.GONE
+    }
+
+    override fun hideNoItems() {
+        linearLayoutAllNoItems.visibility = View.GONE
+        recyclerActivityMainGifs.visibility = View.VISIBLE
     }
 
     private fun startSearchActions(searchView: SearchView) = searchView.rxQueryText()

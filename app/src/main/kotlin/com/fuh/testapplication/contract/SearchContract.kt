@@ -11,6 +11,8 @@ object SearchContract {
     interface View : BaseView<Presenter> {
         fun showFirstResults(data: List<Gif>)
         fun showNextResults(data: List<Gif>)
+        fun showNoItems()
+        fun hideNoItems()
     }
 
     interface Presenter : BasePresenter {

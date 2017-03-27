@@ -11,6 +11,8 @@ import io.realm.RealmResults
 object SavedContract {
     interface View : BaseView<Presenter> {
         fun showSavedGifs(data: RealmResults<Gif>)
+        fun showNoItems()
+        fun hideNoItems()
     }
 
     interface Presenter : BasePresenter {

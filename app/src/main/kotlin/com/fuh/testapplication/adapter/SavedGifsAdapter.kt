@@ -22,15 +22,15 @@ import kotlinx.android.synthetic.main.item_gif.view.*
 /**
  * Created by Nick on 26.03.2017.
  */
-class SavedGifsAdapter(var gifs: RealmResults<Gif>? = null,
-                       private val itemClick: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit,
-                       private val itemLongClick: (Gif) -> Boolean
-) : RecyclerView.Adapter<SavedGifsAdapter.ViewHolder>(),
-        RealmChangeListener<RealmResults<Gif>> {
+class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<RealmResults<Gif>>,
+                       private val itemClickListener: (Context, Uri, BitmapRequestBuilder<Uri, GlideDrawable>, ImageView, Boolean) -> Unit,
+                       private val itemLongClickListener: (Gif) -> Boolean,
+                       var gifs: RealmResults<Gif>? = null
+) : RecyclerView.Adapter<SavedGifsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.ctx).inflate(R.layout.item_gif, parent, false)
-        return ViewHolder(view, itemClick, itemLongClick)
+        return ViewHolder(view, itemClickListener, itemLongClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -39,13 +39,9 @@ class SavedGifsAdapter(var gifs: RealmResults<Gif>? = null,
 
     override fun getItemCount(): Int = gifs?.size ?: 0
 
-    override fun onChange(element: RealmResults<Gif>?) {
-        notifyDataSetChanged()
-    }
-
     fun setSavedGifs(data: RealmResults<Gif>) {
         gifs = data
-        gifs!!.addChangeListener(this)
+        gifs!!.addChangeListener(dataChangeListener)
         notifyDataSetChanged()
     }
 

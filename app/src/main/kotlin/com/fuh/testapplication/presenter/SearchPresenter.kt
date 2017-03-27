@@ -26,17 +26,23 @@ class SearchPresenter
 
     var query = ""
 
-    override fun start() {}
+    override fun start() {
+        view.showNoItems()
+    }
 
     override fun stop() {
         realm.close()
     }
 
     override fun loadFirstPage(q: String) {
+        view.hideNoItems()
         query = getSearchQuery(q)
         model.search(query, 0, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
+                    if (it.data.isEmpty()) {
+                        view.showNoItems()
+                    }
                     view.showFirstResults(it.data)
                 }
     }
@@ -44,20 +50,26 @@ class SearchPresenter
     override fun loadNextPage(page: Int) {
         model.search(query, RECORDS_ON_PAGE * page, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe ({
                     view.showNextResults(it.data)
-                }
+                }, {
+
+                })
     }
 
     override fun saveGif(gif: Gif) {
-        realm.executeTransactionAsync {
+        realm.executeTransactionAsync ({
             val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
             Utils.downloadFileSync(gif.images!!.original!!.url!!, futureGifFile)
 
-            gif.url = Uri.fromFile(futureGifFile).toString()
+            gif.images!!.original!!.url = Uri.fromFile(futureGifFile).toString()
 
             it.copyToRealm(gif)
-        }
+        }, {
+
+        }, {
+
+        })
     }
 
     private fun getSearchQuery(q: String) = q.replace(' ', '+')
