@@ -5,6 +5,7 @@ import com.fuh.testapplication.di.component.AppComponent
 import com.fuh.testapplication.di.component.DaggerAppComponent
 import com.fuh.testapplication.di.module.AppModule
 import com.fuh.testapplication.di.module.NetworkModule
+import com.fuh.testapplication.util.LocaleHelper
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import timber.log.Timber
@@ -20,6 +21,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        LocaleHelper.onCreate(this, "en")
         Timber.plant(Timber.DebugTree())
 
         appComponent = DaggerAppComponent.builder()

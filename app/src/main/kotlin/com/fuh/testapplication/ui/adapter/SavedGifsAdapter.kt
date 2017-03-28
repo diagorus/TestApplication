@@ -53,10 +53,11 @@ class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<Realm
 
         fun bind(gif: Gif) = with(gif) {
             var isPlaying = false
-            val uri = Uri.parse(images?.original?.url)
+            val originalUri = Uri.parse(images?.original?.url)
+            val thumbUri = Uri.parse(images?.original_still?.url)
             val thumbRequest = Glide
                     .with(itemView.ctx)
-                    .load(uri)
+                    .load(thumbUri)
                     .asBitmap()
                     .transcode(BitmapToGlideDrawableTranscoder(itemView.ctx), GlideDrawable::class.java)
                     .override(150, 150)
@@ -69,7 +70,7 @@ class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<Realm
             thumbRequest.into(itemView.imageItemGifIcon)
             itemView.textItemGifTitle.text = slug
             itemView.setOnClickListener {
-                itemClick(itemView.ctx, uri, thumbRequest,itemView.imageItemGifIcon, isPlaying)
+                itemClick(itemView.ctx, originalUri, thumbRequest,itemView.imageItemGifIcon, isPlaying)
                 isPlaying = !isPlaying
             }
             itemView.setOnLongClickListener {
