@@ -31,9 +31,18 @@ open class Gif(
 
 @RealmClass
 open class Images(
+        @Expose @SerializedName("fixed_height") open var fixed_height: GifImage? = null,
+        @Expose @SerializedName("fixed_height_still") open var fixed_height_still: GifImage? = null,
+        @Expose @SerializedName("fixed_width") open var fixed_width: GifImage? = null,
+        @Expose @SerializedName("fixed_width_still") open var fixed_width_still: GifImage? = null,
         @Expose @SerializedName("original") open var original: GifImage? = null,
         @Expose @SerializedName("original_still") open var original_still: GifImage? = null
 ) : RealmObject()
 
 @RealmClass
-open class GifImage(@Expose @SerializedName("url") open var url: String? = null) : RealmObject()
+open class GifImage(
+        @Expose @SerializedName("url") open var url: String? = null,
+        @Expose @SerializedName("width") open var width: Int = 0,
+        @Expose @SerializedName("height") open var height: Int = 0
+
+) : RealmObject()

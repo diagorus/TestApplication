@@ -3,16 +3,18 @@ package com.fuh.testapplication.ui.activity
 import android.app.SearchManager
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
+import android.support.v7.widget.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.ui.adapter.GifsAdapter
 import com.fuh.testapplication.contract.SearchContract
@@ -21,6 +23,7 @@ import com.fuh.testapplication.di.module.activity.MainActivityModule
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_gif.view.*
 import kotlinx.android.synthetic.main.layout_no_items.*
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -121,31 +124,21 @@ class MainActivity : BaseActivity(), SearchContract.View {
     }
 
     private fun initRecycler() = with(recyclerActivityMainGifs) {
-        val gridLayoutManager = GridLayoutManager(ctx, 2)
-        layoutManager = gridLayoutManager
+        val linearLayoutManager = LinearLayoutManager(context)
+        layoutManager = linearLayoutManager
 
-        gifsAdapter = GifsAdapter(mutableListOf<Gif>(), {
-            ctx, uri, thumbRequest, imageView, isPlaying ->
-            if (!isPlaying) {
-                Glide
-                        .with(ctx)
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .override(150, 150)
-                        .placeholder(R.drawable.thumb_image_loading)
-                        .error(R.drawable.thumb_image_error)
-                        .thumbnail(thumbRequest)
-                        .dontAnimate()
-                        .into(imageView)
-            } else {
+        gifsAdapter = GifsAdapter({ imageView, thumbRequest, actualGifRequest, isPlaying ->
+            if (isPlaying) {
                 thumbRequest.into(imageView)
+            } else {
+                actualGifRequest.into(imageView)
             }
         }, {
             presenter.saveGif(it)
             true
         })
 
-        scrollListener = object: EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        scrollListener = object: EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 presenter.loadNextPage(page)
             }

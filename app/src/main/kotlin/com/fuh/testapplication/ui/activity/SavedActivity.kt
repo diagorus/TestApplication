@@ -78,21 +78,11 @@ class SavedActivity : BaseActivity(), SavedContract.View {
                 showNoItems()
             }
             savedGifsAdapter.notifyDataSetChanged()
-        }, {
-            ctx, uri, thumbRequest, imageView, isPlaying ->
-            if (!isPlaying) {
-                Glide
-                        .with(ctx)
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .override(150, 150)
-                        .placeholder(R.drawable.thumb_image_loading)
-                        .error(R.drawable.thumb_image_error)
-                        .thumbnail(thumbRequest)
-                        .dontAnimate()
-                        .into(imageView)
-            } else {
+        }, { imageView, thumbRequest, actualGifRequest, isPlaying ->
+            if (isPlaying) {
                 thumbRequest.into(imageView)
+            } else {
+                actualGifRequest.into(imageView)
             }
         }, {
             presenter.deleteGif(it)
