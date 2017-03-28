@@ -33,6 +33,7 @@ class App : Application() {
     fun initRealm() {
         Realm.init(this)
         val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
                 .name("TestApplication.realm")
                 .build()
         Realm.setDefaultConfiguration(config)
