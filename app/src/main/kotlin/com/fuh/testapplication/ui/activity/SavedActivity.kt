@@ -8,7 +8,7 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
-import com.fuh.testapplication.adapter.SavedGifsAdapter
+import com.fuh.testapplication.ui.adapter.SavedGifsAdapter
 import com.fuh.testapplication.contract.SavedContract
 import com.fuh.testapplication.di.component.activity.SavedActivityComponent
 import com.fuh.testapplication.di.module.activity.SavedActivityModule

@@ -14,7 +14,7 @@ import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fuh.testapplication.R
-import com.fuh.testapplication.adapter.GifsAdapter
+import com.fuh.testapplication.ui.adapter.GifsAdapter
 import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.component.activity.MainActivityComponent
 import com.fuh.testapplication.di.module.activity.MainActivityModule

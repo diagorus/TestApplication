@@ -8,6 +8,7 @@ import com.fuh.testapplication.model.GiphyApi
 import com.fuh.testapplication.util.Utils
 import io.realm.Realm
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -45,6 +46,7 @@ class SearchPresenter
                     }
                     view.showFirstResults(it.data)
                 }, {
+                    Timber.e(it, "Error searching query: \'$query\'")
                     view.showSearchError()
                 })
     }
@@ -55,6 +57,7 @@ class SearchPresenter
                 .subscribe ({
                     view.showNextResults(it.data)
                 }, {
+                    Timber.e(it, "Error loading next page: \'$page\' by query: \'$query\'")
                     view.showNextPageError()
                 })
     }
@@ -63,6 +66,7 @@ class SearchPresenter
         val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
 
         if (futureGifFile.exists()) {
+            Timber.i("Gif: ${gif.id} has already loaded")
             view.showAlreadySavedError(gif)
             return
         }
@@ -74,15 +78,13 @@ class SearchPresenter
 
             it.copyToRealm(gif)
         }, {
+            Timber.i("Gif successfully loaded: ${gif.id}")
             view.showSavingSuccessful(gif)
         }, {
+            Timber.e(it, "Error in loading gif transaction")
             view.showSavingError(gif)
         })
     }
 
     private fun getSearchQuery(q: String) = q.replace(' ', '+')
-
-    private fun isAlreadySaved(gif: String) {
-
-    }
 }

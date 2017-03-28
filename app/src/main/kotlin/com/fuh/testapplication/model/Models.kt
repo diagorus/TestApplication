@@ -30,7 +30,10 @@ open class Gif(
 ) : RealmObject()
 
 @RealmClass
-open class Images(@Expose @SerializedName("original") open var original: GifImage? = null) : RealmObject()
+open class Images(
+        @Expose @SerializedName("original") open var original: GifImage? = null,
+        @Expose @SerializedName("original_still") open var original_still: GifImage? = null
+) : RealmObject()
 
 @RealmClass
 open class GifImage(@Expose @SerializedName("url") open var url: String? = null) : RealmObject()

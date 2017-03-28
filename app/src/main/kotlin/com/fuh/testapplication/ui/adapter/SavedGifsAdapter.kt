@@ -1,4 +1,4 @@
-package com.fuh.testapplication.adapter
+package com.fuh.testapplication.ui.adapter
 
 import android.content.Context
 import android.net.Uri
