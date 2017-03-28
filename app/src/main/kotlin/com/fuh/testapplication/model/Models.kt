@@ -25,18 +25,13 @@ data class Pagination(
 open class Gif(
         @PrimaryKey @Expose @SerializedName("id") open var id: String? = null,
         @Expose @SerializedName("slug") open var slug: String? = null,
-        @Expose @SerializedName("url") open var url: String? = null,
         @Expose @SerializedName("images") open var images: Images? = null
 ) : RealmObject()
 
 @RealmClass
 open class Images(
         @Expose @SerializedName("fixed_height") open var fixed_height: GifImage? = null,
-        @Expose @SerializedName("fixed_height_still") open var fixed_height_still: GifImage? = null,
-        @Expose @SerializedName("fixed_width") open var fixed_width: GifImage? = null,
-        @Expose @SerializedName("fixed_width_still") open var fixed_width_still: GifImage? = null,
-        @Expose @SerializedName("original") open var original: GifImage? = null,
-        @Expose @SerializedName("original_still") open var original_still: GifImage? = null
+        @Expose @SerializedName("fixed_height_still") open var fixed_height_still: GifImage? = null
 ) : RealmObject()
 
 @RealmClass
