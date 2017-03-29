@@ -34,7 +34,7 @@ class SavedPresenter
 
     override fun deleteGif(gif: Gif) {
         realm.executeTransaction {
-            val uri = Uri.parse(gif.images!!.original!!.url)
+            val uri = Uri.parse(gif.images!!.fixed_height!!.url)
             File(uri.path).delete()
             gif.deleteFromRealm()
         }

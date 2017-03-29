@@ -72,9 +72,9 @@ class SearchPresenter
         }
 
         realm.executeTransactionAsync ({
-            Utils.downloadFileSync(gif.images!!.original!!.url!!, futureGifFile)
+            Utils.downloadFileSync(gif.images!!.fixed_height!!.url!!, futureGifFile)
 
-            gif.images!!.original!!.url = Uri.fromFile(futureGifFile).toString()
+            gif.images!!.fixed_height!!.url = Uri.fromFile(futureGifFile).toString()
 
             it.copyToRealm(gif)
         }, {
