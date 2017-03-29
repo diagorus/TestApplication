@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.item_gif.view.*
  * Created by Nick on 26.03.2017.
  */
 class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<RealmResults<Gif>>,
-                       private val itemClick: (ImageView, DrawableRequestBuilder<Uri>, DrawableRequestBuilder<String>, Boolean) -> Unit,
+                       private val itemClick: (ImageView, BitmapRequestBuilder<String, GlideDrawable>, DrawableRequestBuilder<String>, Boolean) -> Unit,
                        private val itemLongClickListener: (Gif) -> Boolean,
                        var gifs: RealmResults<Gif>? = null
 ) : RecyclerView.Adapter<SavedGifsAdapter.ViewHolder>() {
@@ -49,13 +49,13 @@ class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<Realm
 
     class ViewHolder(
             itemView: View,
-            private val itemClick: (ImageView, DrawableRequestBuilder<Uri>, DrawableRequestBuilder<String>, Boolean) -> Unit,
+            private val itemClick: (ImageView,  BitmapRequestBuilder<String, GlideDrawable>, DrawableRequestBuilder<String>, Boolean) -> Unit,
             private val itemLongClick: (Gif) -> Boolean
     ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(gif: Gif) = with(gif) {
-            val thumbRequest = GifUtils.getThumbGifRequest(itemView.ctx, this)!!
-            val originalRequest = GifUtils.getActualGifRequest(itemView.ctx, this, thumbRequest)!!
+            val thumbRequest = GifUtils.getThumbGifFromStorage(itemView.ctx, this)!!
+            val originalRequest = GifUtils.getActualGifFromStorage(itemView.ctx, this, thumbRequest)!!
             var isPlaying = false
 
             thumbRequest.into(itemView.imageItemGifIcon)
