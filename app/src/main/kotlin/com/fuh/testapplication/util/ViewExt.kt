@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import com.fuh.testapplication.R
+import io.reactivex.Observable
 import rx.Observable
 
 /**
@@ -21,7 +22,7 @@ fun SearchView.rxQueryText() = Observable.create<String> {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
                 it.onNext(query)
-                it.onCompleted()
+                it.onComplete()
             return true
         }
 

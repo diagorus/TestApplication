@@ -13,8 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.ui.adapter.GifsAdapter
 import com.fuh.testapplication.contract.SearchContract
@@ -22,10 +20,10 @@ import com.fuh.testapplication.di.component.activity.MainActivityComponent
 import com.fuh.testapplication.di.module.activity.MainActivityModule
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.util.*
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_gif.view.*
 import kotlinx.android.synthetic.main.layout_no_items.*
-import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
