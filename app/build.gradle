@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 android {
@@ -67,6 +68,12 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttp_version"
     //Timber
     compile "com.jakewharton.timber:timber:$timber_version"
+    //PermissionsDispatcher
+    compile("com.github.hotchemi:permissionsdispatcher:$permissionsdispatcher_version") {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:$permissionsdispatcher_version"
 }
 
 buildscript {
@@ -81,5 +88,6 @@ buildscript {
         glide_version = '4.0.0'
         glide_transformations_version = '2.0.2'
         timber_version = '4.5.1'
+        permissionsdispatcher_version = '2.4.0'
     }
 }

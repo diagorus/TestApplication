@@ -1,4 +1,4 @@
-package com.fuh.testapplication.util
+package com.fuh.testapplication.util.extensions
 
 import android.content.Context
 import android.widget.Toast

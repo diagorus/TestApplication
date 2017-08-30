@@ -1,8 +1,8 @@
 package com.fuh.testapplication.model
 
+import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
-import rx.Observable
 
 /**
  * Created by Nick on 22.03.2017.

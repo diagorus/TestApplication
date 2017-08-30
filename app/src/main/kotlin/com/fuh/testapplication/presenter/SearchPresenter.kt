@@ -6,9 +6,10 @@ import com.fuh.testapplication.di.scope.ActivityScope
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.model.GiphyApi
 import com.fuh.testapplication.util.Utils
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.realm.Realm
-import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.net.URL
 import javax.inject.Inject
 
 /**
@@ -54,12 +55,15 @@ class SearchPresenter
     override fun loadNextPage(page: Int) {
         model.search(query, RECORDS_ON_PAGE * page, RECORDS_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({
-                    view.showNextResults(it.data)
-                }, {
-                    Timber.e(it, "Error loading next page: \'$page\' by query: \'$query\'")
-                    view.showNextPageError()
-                })
+                .subscribe (
+                        {
+                            view.showNextResults(it.data)
+                        },
+                        {
+                            Timber.e(it, "Error loading next page: \'$page\' by query: \'$query\'")
+                            view.showNextPageError()
+                        }
+                )
     }
 
     override fun saveGif(gif: Gif) {
@@ -70,11 +74,10 @@ class SearchPresenter
             view.showAlreadySavedError(gif)
             return
         }
-
         realm.executeTransactionAsync ({
-            Utils.downloadFileSync(gif.images!!.fixed_height!!.url!!, futureGifFile)
+            Utils.downloadFileSync(gif.images!!.fixedHeight!!.url!!, futureGifFile)
 
-            gif.images!!.fixed_height!!.url = Uri.fromFile(futureGifFile).toString()
+            gif.images!!.fixedHeight!!.url = Uri.fromFile(futureGifFile).toString()
 
             it.copyToRealm(gif)
         }, {
@@ -86,5 +89,5 @@ class SearchPresenter
         })
     }
 
-    private fun getSearchQuery(q: String) = q.replace(' ', '+')
+    private fun getSearchQuery(q: String): String = q.replace(' ', '+')
 }

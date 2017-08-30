@@ -1,22 +1,19 @@
 package com.fuh.testapplication.ui.adapter
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.BitmapRequestBuilder
-import com.bumptech.glide.DrawableRequestBuilder
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder
+import com.bumptech.glide.RequestBuilder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.util.GifUtils
-import com.fuh.testapplication.util.ctx
+import com.fuh.testapplication.util.extensions.ctx
+import com.fuh.testapplication.util.extensions.getRequestFromStorage
+import com.fuh.testapplication.util.extensions.getThumbRequest
+import com.fuh.testapplication.util.extensions.getThumbRequestFromStorage
 import io.realm.RealmChangeListener
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.item_gif.view.*
@@ -25,7 +22,7 @@ import kotlinx.android.synthetic.main.item_gif.view.*
  * Created by Nick on 26.03.2017.
  */
 class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<RealmResults<Gif>>,
-                       private val itemClick: (ImageView, BitmapRequestBuilder<String, GlideDrawable>, DrawableRequestBuilder<String>, Boolean) -> Unit,
+                       private val itemClick: (ImageView, RequestBuilder<Drawable>, RequestBuilder<Drawable>, Boolean) -> Unit,
                        private val itemLongClickListener: (Gif) -> Boolean,
                        var gifs: RealmResults<Gif>? = null
 ) : RecyclerView.Adapter<SavedGifsAdapter.ViewHolder>() {
@@ -49,13 +46,13 @@ class SavedGifsAdapter(private val dataChangeListener: RealmChangeListener<Realm
 
     class ViewHolder(
             itemView: View,
-            private val itemClick: (ImageView,  BitmapRequestBuilder<String, GlideDrawable>, DrawableRequestBuilder<String>, Boolean) -> Unit,
+            private val itemClick: (ImageView, RequestBuilder<Drawable>, RequestBuilder<Drawable>, Boolean) -> Unit,
             private val itemLongClick: (Gif) -> Boolean
     ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(gif: Gif) = with(gif) {
-            val thumbRequest = GifUtils.getThumbGifFromStorage(itemView.ctx, this)!!
-            val originalRequest = GifUtils.getActualGifFromStorage(itemView.ctx, this, thumbRequest)!!
+            val thumbRequest = getThumbRequestFromStorage(itemView.ctx)!!
+            val originalRequest = getRequestFromStorage(itemView.ctx, thumbRequest)!!
             var isPlaying = false
 
             thumbRequest.into(itemView.imageItemGifIcon)

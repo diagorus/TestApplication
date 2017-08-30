@@ -1,4 +1,4 @@
-package com.fuh.testapplication.util
+package com.fuh.testapplication.util.extensions
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -7,10 +7,10 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import com.fuh.testapplication.R
 import io.reactivex.Observable
-import rx.Observable
 
 /**
  * Created by Nick on 22.03.2017.
@@ -18,22 +18,24 @@ import rx.Observable
 val View.ctx: Context
     get() = context
 
-fun SearchView.rxQueryText() = Observable.create<String> {
-    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String): Boolean {
-                it.onNext(query)
-                it.onComplete()
-            return true
-        }
+fun SearchView.rxQueryText(): Observable<String> =
+        Observable.create<String> {
+            this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    it.onNext(query)
+                    it.onComplete()
 
-        override fun onQueryTextChange(newText: String): Boolean {
-            if (!newText.isEmpty()) {
-                it.onNext(newText)
-            }
-            return true
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    if (!newText.isEmpty()) {
+                        it.onNext(newText)
+                    }
+                    return true
+                }
+            })
         }
-    })
-}
 
 fun Menu.tintAllIcons(color: Int) {
     (0 until size())
@@ -50,13 +52,13 @@ fun MenuItem.tintIcon(color: Int)  = icon?.let {
 }
 
 fun MenuItem.tintShareIconIfPresent(color: Int) = actionView?.let {
-    val expandActivitiesButton = it.findViewById(R.id.expand_activities_button)
-    expandActivitiesButton?.let { v ->
-        val image = v.findViewById(R.id.image) as ImageView?
-        image?.let { v ->
-            val drawable = v.drawable
+    val expandActivitiesButton = it.findViewById<FrameLayout>(R.id.expand_activities_button)
+    expandActivitiesButton?.let {
+        val image = it.findViewById<ImageView?>(R.id.image)
+        image?.let {
+            val drawable = it.drawable
             drawable.tint(color)
-            v.setImageDrawable(drawable)
+            it.setImageDrawable(drawable)
         }
     }
 }

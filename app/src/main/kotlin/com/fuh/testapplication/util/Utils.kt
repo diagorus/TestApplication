@@ -3,6 +3,7 @@ package com.fuh.testapplication.util
 import android.app.Activity
 import android.os.Environment
 import android.view.inputmethod.InputMethodManager
+import com.fuh.testapplication.util.extensions.inputMethodManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -30,13 +31,13 @@ object Utils {
             throw IOException("Failed to download file: " + response)
         }
         val fos = FileOutputStream(file)
-        fos.write(response.body().bytes())
+        fos.write(response.body()?.bytes())
         fos.close()
     }
 
     fun getFileInAppRoot(name: String): File {
         val rootDir = File(Environment.getExternalStorageDirectory(), "/TestApplicationData")
-        if (!rootDir.exists()) { rootDir.mkdir() }
+        if (!rootDir.exists()) { rootDir.mkdirs() }
         return File(rootDir, "$name.gif")
     }
 }
