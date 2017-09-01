@@ -1,4 +1,4 @@
-package com.fuh.testapplication.ui.activity
+package com.fuh.testapplication.screens.saved
 
 import android.content.Context
 import android.content.Intent
@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.fuh.testapplication.R
-import com.fuh.testapplication.ui.adapter.SavedGifsAdapter
-import com.fuh.testapplication.contract.SavedContract
-import com.fuh.testapplication.di.component.activity.SavedActivityComponent
-import com.fuh.testapplication.di.module.activity.SavedActivityModule
 import com.fuh.testapplication.model.Gif
+import com.fuh.testapplication.util.BaseActivity
 import com.fuh.testapplication.util.extensions.ctx
 import io.realm.RealmChangeListener
 import io.realm.RealmResults

@@ -1,9 +1,9 @@
-package com.fuh.testapplication.ui.activity
+package com.fuh.testapplication.util
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.fuh.testapplication.App
-import com.fuh.testapplication.di.component.AppComponent
+import com.fuh.testapplication.AppComponent
 
 /**
  * Created by Nick on 22.03.2017.

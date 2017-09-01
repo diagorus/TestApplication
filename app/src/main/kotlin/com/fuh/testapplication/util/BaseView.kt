@@ -1,4 +1,4 @@
-package com.fuh.testapplication.ui
+package com.fuh.testapplication.util
 
 /**
  * Created by Nick on 22.03.2017.

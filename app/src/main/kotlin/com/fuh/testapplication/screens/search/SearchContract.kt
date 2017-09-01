@@ -1,8 +1,8 @@
-package com.fuh.testapplication.contract
+package com.fuh.testapplication.screens.search
 
 import com.fuh.testapplication.model.Gif
-import com.fuh.testapplication.presenter.BasePresenter
-import com.fuh.testapplication.ui.BaseView
+import com.fuh.testapplication.util.BasePresenter
+import com.fuh.testapplication.util.BaseView
 
 /**
  * Created by Nick on 22.03.2017.

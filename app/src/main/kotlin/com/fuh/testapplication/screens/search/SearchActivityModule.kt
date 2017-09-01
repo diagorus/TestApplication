@@ -1,8 +1,8 @@
-package com.fuh.testapplication.di.module.activity
+package com.fuh.testapplication.screens.search
 
-import com.fuh.testapplication.contract.SearchContract
+import com.fuh.testapplication.screens.search.SearchContract
 import com.fuh.testapplication.di.scope.ActivityScope
-import com.fuh.testapplication.presenter.SearchPresenter
+import com.fuh.testapplication.screens.search.SearchPresenter
 import dagger.Module
 import dagger.Provides
 
@@ -10,7 +10,7 @@ import dagger.Provides
  * Created by Nick on 22.03.2017.
  */
 @Module
-class MainActivityModule(val view: SearchContract.View) {
+class SearchActivityModule(val view: SearchContract.View) {
     @ActivityScope
     @Provides
     fun provideView(): SearchContract.View = view

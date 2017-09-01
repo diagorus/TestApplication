@@ -1,17 +1,14 @@
-package com.fuh.testapplication.ui.adapter
+package com.fuh.testapplication.screens.search
 
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
-import com.fuh.testapplication.util.GifUtils
 import com.fuh.testapplication.util.extensions.ctx
 import com.fuh.testapplication.util.extensions.getRequest
 import com.fuh.testapplication.util.extensions.getThumbRequest

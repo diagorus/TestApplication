@@ -1,7 +1,7 @@
-package com.fuh.testapplication.di.component
+package com.fuh.testapplication
 
-import com.fuh.testapplication.di.component.activity.MainActivityComponent
-import com.fuh.testapplication.di.component.activity.SavedActivityComponent
+import com.fuh.testapplication.screens.search.SearchActivityComponent
+import com.fuh.testapplication.screens.saved.SavedActivityComponent
 import com.fuh.testapplication.di.module.AppModule
 import com.fuh.testapplication.di.module.DatabaseModule
 import com.fuh.testapplication.di.module.NetworkModule
@@ -18,6 +18,6 @@ import javax.inject.Singleton
         DatabaseModule::class
 ))
 interface AppComponent {
-    fun mainActivityComponentBuilder(): MainActivityComponent.Builder
+    fun mainActivityComponentBuilder(): SearchActivityComponent.Builder
     fun savedActivityComponentBuilder(): SavedActivityComponent.Builder
 }

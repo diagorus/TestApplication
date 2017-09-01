@@ -1,15 +1,14 @@
-package com.fuh.testapplication.presenter
+package com.fuh.testapplication.screens.search
 
 import android.net.Uri
-import com.fuh.testapplication.contract.SearchContract
 import com.fuh.testapplication.di.scope.ActivityScope
 import com.fuh.testapplication.model.Gif
 import com.fuh.testapplication.model.GiphyApi
-import com.fuh.testapplication.util.Utils
+import com.fuh.testapplication.util.extensions.downloadSync
+import com.fuh.testapplication.util.extensions.getAsFileInAppRoot
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.realm.Realm
 import timber.log.Timber
-import java.net.URL
 import javax.inject.Inject
 
 /**
@@ -67,7 +66,7 @@ class SearchPresenter
     }
 
     override fun saveGif(gif: Gif) {
-        val futureGifFile = Utils.getFileInAppRoot(gif.slug!!)
+        val futureGifFile = gif.slug!!.getAsFileInAppRoot()
 
         if (futureGifFile.exists()) {
             Timber.i("Gif: ${gif.id} has already loaded")
@@ -75,16 +74,17 @@ class SearchPresenter
             return
         }
         realm.executeTransactionAsync ({
-            Utils.downloadFileSync(gif.images!!.fixedHeight!!.url!!, futureGifFile)
+            val downloadUri = Uri.parse(gif.images?.fixedHeight?.url)
+            downloadUri.downloadSync(futureGifFile)
 
-            gif.images!!.fixedHeight!!.url = Uri.fromFile(futureGifFile).toString()
+            gif.images?.fixedHeight?.url = Uri.fromFile(futureGifFile).toString()
 
             it.copyToRealm(gif)
         }, {
             Timber.i("Gif successfully loaded: ${gif.id}")
             view.showSavingSuccessful(gif)
         }, {
-            Timber.e(it, "Error in loading gif transaction")
+            Timber.e(it, "Error while preforming gif transaction")
             view.showSavingError(gif)
         })
     }

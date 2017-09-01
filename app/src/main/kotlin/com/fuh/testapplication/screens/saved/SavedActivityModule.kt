@@ -1,8 +1,8 @@
-package com.fuh.testapplication.di.module.activity
+package com.fuh.testapplication.screens.saved
 
-import com.fuh.testapplication.contract.SavedContract
+import com.fuh.testapplication.screens.saved.SavedContract
 import com.fuh.testapplication.di.scope.ActivityScope
-import com.fuh.testapplication.presenter.SavedPresenter
+import com.fuh.testapplication.screens.saved.SavedPresenter
 import dagger.Module
 import dagger.Provides
 

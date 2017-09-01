@@ -1,4 +1,4 @@
-package com.fuh.testapplication.ui.activity
+package com.fuh.testapplication.screens.search
 
 import android.Manifest
 import android.app.SearchManager
@@ -11,16 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import com.fuh.testapplication.R
-import com.fuh.testapplication.ui.adapter.GifsAdapter
-import com.fuh.testapplication.contract.SearchContract
-import com.fuh.testapplication.di.component.activity.MainActivityComponent
-import com.fuh.testapplication.di.module.activity.MainActivityModule
 import com.fuh.testapplication.model.Gif
+import com.fuh.testapplication.screens.saved.SavedActivity
 import com.fuh.testapplication.util.*
-import com.fuh.testapplication.util.extensions.ctx
-import com.fuh.testapplication.util.extensions.rxQueryText
-import com.fuh.testapplication.util.extensions.tintAllIcons
-import com.fuh.testapplication.util.extensions.toast
+import com.fuh.testapplication.util.extensions.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_no_items.*
@@ -29,9 +23,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @RuntimePermissions
-class MainActivity : BaseActivity(), SearchContract.View {
+class SearchActivity : BaseActivity(), SearchContract.View {
 
-    lateinit var component: MainActivityComponent
+    lateinit var component: SearchActivityComponent
     @Inject override lateinit var presenter: SearchContract.Presenter
 
     lateinit var gifsAdapter: GifsAdapter
@@ -75,12 +69,12 @@ class MainActivity : BaseActivity(), SearchContract.View {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+        SearchActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
     }
 
     override fun setupDependencies() {
         component = appComponent.mainActivityComponentBuilder()
-                .mainActivityModule(MainActivityModule(this))
+                .searchActivityModule(SearchActivityModule(this))
                 .build()
 
         component.inject(this)
@@ -158,7 +152,7 @@ class MainActivity : BaseActivity(), SearchContract.View {
                 actualGifRequest.into(imageView)
             }
         }, {
-            MainActivityPermissionsDispatcher.saveGifWithCheck(this@MainActivity, it)
+            SearchActivityPermissionsDispatcher.saveGifWithCheck(this@SearchActivity, it)
             true
         })
 
@@ -200,6 +194,6 @@ class MainActivity : BaseActivity(), SearchContract.View {
             }, {
                 toast("Error! ${it.message}")
             }, {
-                Utils.hideKeyboard(this)
+                hideKeyboard()
             })
 }

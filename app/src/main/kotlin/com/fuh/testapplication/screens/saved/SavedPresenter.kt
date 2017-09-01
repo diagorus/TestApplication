@@ -1,7 +1,6 @@
-package com.fuh.testapplication.presenter
+package com.fuh.testapplication.screens.saved
 
 import android.net.Uri
-import com.fuh.testapplication.contract.SavedContract
 import com.fuh.testapplication.di.scope.ActivityScope
 import com.fuh.testapplication.model.Gif
 import io.realm.Realm

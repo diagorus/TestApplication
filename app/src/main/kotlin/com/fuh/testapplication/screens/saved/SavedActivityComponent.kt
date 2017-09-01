@@ -1,8 +1,6 @@
-package com.fuh.testapplication.di.component.activity
+package com.fuh.testapplication.screens.saved
 
-import com.fuh.testapplication.di.module.activity.SavedActivityModule
 import com.fuh.testapplication.di.scope.ActivityScope
-import com.fuh.testapplication.ui.activity.SavedActivity
 import dagger.Subcomponent
 
 /**

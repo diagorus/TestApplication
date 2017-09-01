@@ -1,4 +1,4 @@
-package com.fuh.testapplication.ui.adapter
+package com.fuh.testapplication.screens.saved
 
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
@@ -9,10 +9,8 @@ import android.widget.ImageView
 import com.bumptech.glide.RequestBuilder
 import com.fuh.testapplication.R
 import com.fuh.testapplication.model.Gif
-import com.fuh.testapplication.util.GifUtils
 import com.fuh.testapplication.util.extensions.ctx
 import com.fuh.testapplication.util.extensions.getRequestFromStorage
-import com.fuh.testapplication.util.extensions.getThumbRequest
 import com.fuh.testapplication.util.extensions.getThumbRequestFromStorage
 import io.realm.RealmChangeListener
 import io.realm.RealmResults
